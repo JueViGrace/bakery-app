@@ -11,15 +11,15 @@ import com.bakery.app.profile.tab.ProfileTab
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 
-sealed class Tabs(val tab: Tab, val index: UShort, val title: StringResource, val icon: DrawableResource) {
-    data object Dashboard : Tabs(
+sealed class NavMenuTabs(val tab: Tab, val index: UShort, val title: StringResource, val icon: DrawableResource) {
+    data object Dashboard : NavMenuTabs(
         tab = DashboardTab,
         index = 0u,
         title = Res.string.dashboard,
         icon = Res.drawable.ic_home_app_logo_24px
     )
 
-    data object Profile : Tabs(
+    data object Profile : NavMenuTabs(
         tab = ProfileTab,
         index = 1u,
         title = Res.string.profile,

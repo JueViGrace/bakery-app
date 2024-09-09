@@ -4,7 +4,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
-import com.bakery.app.core.presentation.navigation.Tabs
+import com.bakery.app.core.presentation.navigation.NavMenuTabs
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -14,9 +14,9 @@ object ProfileTab : Tab {
         @Composable
         get() {
             return TabOptions(
-                index = Tabs.Profile.index,
-                title = stringResource(Tabs.Profile.title),
-                icon = painterResource(Tabs.Profile.icon)
+                index = NavMenuTabs.Profile.index,
+                title = stringResource(NavMenuTabs.Profile.title),
+                icon = painterResource(NavMenuTabs.Profile.icon)
             )
         }
 

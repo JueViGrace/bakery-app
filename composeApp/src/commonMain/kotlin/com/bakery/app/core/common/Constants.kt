@@ -1,10 +1,10 @@
 package com.bakery.app.core.common
 
-import com.bakery.app.core.presentation.navigation.Tabs
+import com.bakery.app.core.presentation.navigation.NavMenuTabs
 
 object Constants {
     val tabs = listOf(
-        Tabs.Dashboard,
-        Tabs.Profile
+        NavMenuTabs.Dashboard,
+        NavMenuTabs.Profile
     )
 }
