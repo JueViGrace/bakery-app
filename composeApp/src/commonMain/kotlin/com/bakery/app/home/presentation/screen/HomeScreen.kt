@@ -1,4 +1,4 @@
-package com.bakery.app.home.screen
+package com.bakery.app.home.presentation.screen
 
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen

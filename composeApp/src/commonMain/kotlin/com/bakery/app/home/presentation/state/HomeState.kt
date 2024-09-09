@@ -1,4 +1,4 @@
-package com.bakery.app.home.state
+package com.bakery.app.home.presentation.state
 
 data class HomeState(
     val greetings: String = ""

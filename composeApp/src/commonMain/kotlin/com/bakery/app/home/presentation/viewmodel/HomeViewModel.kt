@@ -1,10 +1,10 @@
-package com.bakery.app.home.viewmodel
+package com.bakery.app.home.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bakery.app.home.state.HomeState
-import kotlinx.coroutines.flow.StateFlow
+import com.bakery.app.home.presentation.state.HomeState
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch

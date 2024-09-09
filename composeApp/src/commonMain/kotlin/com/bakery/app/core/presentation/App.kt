@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.navigator.Navigator
 import com.bakery.app.core.di.koinConfiguration
 import com.bakery.app.core.presentation.theme.BakeryTheme
-import com.bakery.app.home.screen.HomeScreen
+import com.bakery.app.home.presentation.screen.HomeScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinApplication
 
