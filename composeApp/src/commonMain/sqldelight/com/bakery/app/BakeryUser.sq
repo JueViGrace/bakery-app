@@ -1,13 +1,13 @@
 CREATE TABLE bakeryUser (
     id INTEGER NOT NULL PRIMARY KEY,
-        name TEXT NOT NULL,
-        lastname TEXT NOT NULL,
-        email TEXT NOT NULL UNIQUE,
-        password TEXT NOT NULL,
-        birth_date TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        phone TEXT NOT NULL,
-        role TEXT NOT NULL DEFAULT 'user',
-        created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    name TEXT NOT NULL,
+    lastname TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL,
+    birth_date TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    phone TEXT NOT NULL,
+    role TEXT NOT NULL DEFAULT 'user',
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP
 );
 
 findOneById:
@@ -24,9 +24,12 @@ REPLACE INTO bakeryUser (
     email,
     password,
     birth_date,
-    phone
+    phone,
+    role,
+    created_at
 )
 VALUES ?
 RETURNING *;
 
-
+delete:
+DELETE FROM bakeryUser;

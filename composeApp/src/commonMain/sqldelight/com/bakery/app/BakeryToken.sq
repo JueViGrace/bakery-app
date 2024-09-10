@@ -1,0 +1,20 @@
+CREATE TABLE bakeryToken (
+    user_email TEXT NOT NULL,
+    token TEXT NOT NULL PRIMARY KEY
+);
+
+findTokenByEmail:
+SELECT *
+FROM bakeryToken
+WHERE bakeryToken.user_email = :email;
+
+insert:
+REPLACE INTO bakeryToken (
+    token,
+    user_email
+)
+VALUES ?
+RETURNING *;
+
+delete:
+DELETE FROM bakeryToken;
