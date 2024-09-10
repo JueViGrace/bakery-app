@@ -1,6 +1,7 @@
 package com.bakery.app.home.presentation.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,7 +18,6 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -25,19 +25,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bakery_app.composeapp.generated.resources.Res
@@ -46,14 +43,14 @@ import bakery_app.composeapp.generated.resources.reimusandia
 import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.TabNavigator
-import com.bakery.app.core.common.Constants.tabs
+import com.bakery.app.core.common.Constants.bottomTabs
+import com.bakery.app.core.common.Constants.drawerTabs
 import com.bakery.app.core.presentation.components.BottomTabNavigationItem
 import com.bakery.app.core.presentation.components.DrawerTabNavigationItem
 import com.bakery.app.core.presentation.components.ScaffoldComponent
 import com.bakery.app.core.presentation.navigation.NavMenuTabs
+import com.bakery.app.home.presentation.state.HomeState
 import com.bakery.app.home.presentation.viewmodel.HomeViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -71,51 +68,45 @@ fun MobileNavigator() {
 fun MobileScreen() {
     val viewModel = koinViewModel<HomeViewModel>()
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val scope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
 
     MobileScaffold(
-        snackbarHostState = snackbarHostState,
-        scope = scope
-    ) {
-        LaunchedEffect(state.greetings != "") {
-            scope.launch {
-                delay(300)
-                snackbarHostState.showSnackbar(state.greetings)
-            }
-        }
-        CurrentTab()
-    }
+        state = state,
+        openAccountDialog = viewModel::openDialog,
+        onDismissRequest = viewModel::dismissDialog,
+    )
 }
 
 @Composable
 fun MobileScaffold(
-    snackbarHostState: SnackbarHostState,
-    scope: CoroutineScope,
-    content: @Composable () -> Unit
+    state: HomeState,
+    openAccountDialog: () -> Unit,
+    onDismissRequest: () -> Unit
 ) {
     val tabNavigator = LocalTabNavigator.current
+
+    if (state.showAccountDialog) {
+        HomeMenuDialog(onDismissRequest = onDismissRequest)
+    }
 
     ScaffoldComponent(
         topBar = {
             if (tabNavigator.current.key == NavMenuTabs.Dashboard.tab.key) {
-                MobileTopBar(snackbarHostState, scope)
+                MobileTopBar(accountClicked = openAccountDialog)
             }
         },
         bottomBar = {
             MobileBottomBar()
-        },
-        snackbarHost = {
-            SnackbarHost(snackbarHostState)
-        },
+        }
     ) {
-        content()
+        CurrentTab()
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MobileTopBar(snackbarHostState: SnackbarHostState, scope: CoroutineScope) {
+fun MobileTopBar(
+    accountClicked: () -> Unit
+) {
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -129,7 +120,13 @@ fun MobileTopBar(snackbarHostState: SnackbarHostState, scope: CoroutineScope) {
                     contentAlignment = Alignment.Center
                 ) {
                     Image(
-                        modifier = Modifier.clip(CircleShape).padding(2.dp),
+                        modifier = Modifier
+                            .background(
+                                color = Color.White,
+                                shape = CircleShape
+                            )
+                            .clip(CircleShape)
+                            .padding(4.dp),
                         painter = painterResource(Res.drawable.reimusandia),
                         contentDescription = "Logo"
                     )
@@ -138,11 +135,7 @@ fun MobileTopBar(snackbarHostState: SnackbarHostState, scope: CoroutineScope) {
             title = {},
             actions = {
                 IconButton(
-                    onClick = {
-                        scope.launch {
-                            snackbarHostState.showSnackbar("TODO: Make Account Screen")
-                        }
-                    }
+                    onClick = accountClicked
                 ) {
                     Icon(
                         painter = painterResource(Res.drawable.ic_account_circle_24px),
@@ -159,7 +152,7 @@ fun MobileTopBar(snackbarHostState: SnackbarHostState, scope: CoroutineScope) {
 fun MobileBottomBar() {
     BottomAppBar(
         actions = {
-            tabs.forEach { tab ->
+            bottomTabs.forEach { tab ->
                 BottomTabNavigationItem(tab.tab)
             }
         },
@@ -186,7 +179,6 @@ fun DesktopScreen() {
     val viewModel = koinViewModel<HomeViewModel>()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
     ModalNavigationDrawer(
@@ -214,7 +206,7 @@ fun DesktopScreen() {
                         HorizontalDivider()
                     }
 
-                    tabs.forEach { tab ->
+                    drawerTabs.forEach { tab ->
                         DrawerTabNavigationItem(tab.tab) {
                             scope.launch {
                                 drawerState.close()
@@ -227,64 +219,72 @@ fun DesktopScreen() {
         drawerState = drawerState
     ) {
         DesktopScaffold(
-            snackbarHostState = snackbarHostState,
-            drawerState = drawerState,
-            scope = scope
-        ) {
-            LaunchedEffect(state.greetings != "") {
+            state = state,
+            openAccountDialog = viewModel::openDialog,
+            onDismissRequest = viewModel::dismissDialog,
+            onNavigationClicked = {
                 scope.launch {
-                    delay(300)
-                    snackbarHostState.showSnackbar(state.greetings)
+                    drawerState.apply {
+                        if (isClosed) open() else close()
+                    }
                 }
             }
-            CurrentTab()
-        }
+        )
     }
 }
 
 @Composable
 fun DesktopScaffold(
-    snackbarHostState: SnackbarHostState,
-    drawerState: DrawerState,
-    scope: CoroutineScope,
-    content: @Composable () -> Unit
+    state: HomeState,
+    onNavigationClicked: () -> Unit,
+    openAccountDialog: () -> Unit,
+    onDismissRequest: () -> Unit,
 ) {
+    if (state.showAccountDialog) {
+        HomeMenuDialog(onDismissRequest = onDismissRequest)
+    }
+
     ScaffoldComponent(
         topBar = {
-            DesktopTopBar(drawerState, scope)
-        },
-        snackbarHost = {
-            SnackbarHost(snackbarHostState)
+            DesktopTopBar(
+                onNavigationClicked = onNavigationClicked,
+                onAccountClicked = openAccountDialog
+            )
         },
     ) {
-        content()
+        CurrentTab()
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DesktopTopBar(
-    drawerState: DrawerState,
-    scope: CoroutineScope
+    onNavigationClicked: () -> Unit,
+    onAccountClicked: () -> Unit
 ) {
     val tabNavigator = LocalTabNavigator.current
+
     CenterAlignedTopAppBar(
         title = {
             Text(text = tabNavigator.current.options.title)
         },
         navigationIcon = {
             IconButton(
-                onClick = {
-                    scope.launch {
-                        drawerState.apply {
-                            if (isClosed) open() else close()
-                        }
-                    }
-                }
+                onClick = onNavigationClicked
             ) {
                 Icon(
                     imageVector = Icons.Filled.Menu,
                     contentDescription = Icons.Filled.Menu.name
+                )
+            }
+        },
+        actions = {
+            IconButton(
+                onClick = onAccountClicked
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.ic_account_circle_24px),
+                    contentDescription = "Account"
                 )
             }
         }

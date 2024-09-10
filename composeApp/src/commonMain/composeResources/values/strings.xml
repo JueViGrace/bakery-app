@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">Bakery and Deserts</string>
-    <string name="dashboard">Dashboard</string>
+    <string name="home">Home</string>
+    <string name="products">Products</string>
+    <string name="orders">Orders</string>
     <string name="profile">Profile</string>
+    <string name="shopping_cart">Shopping cart</string>
+    <string name="manage_account">Manage account</string>
 </resources>

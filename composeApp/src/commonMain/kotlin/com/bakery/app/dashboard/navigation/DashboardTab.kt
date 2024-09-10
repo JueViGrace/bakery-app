@@ -1,4 +1,4 @@
-package com.bakery.app.profile.tab
+package com.bakery.app.dashboard.navigation
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -8,20 +8,19 @@ import com.bakery.app.core.presentation.navigation.NavMenuTabs
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
-object ProfileTab : Tab {
-
+object DashboardTab : Tab {
     override val options: TabOptions
         @Composable
         get() {
             return TabOptions(
-                index = NavMenuTabs.Profile.index,
-                title = stringResource(NavMenuTabs.Profile.title),
-                icon = painterResource(NavMenuTabs.Profile.icon)
+                index = NavMenuTabs.Dashboard.index,
+                title = stringResource(NavMenuTabs.Dashboard.title),
+                icon = painterResource(NavMenuTabs.Dashboard.icon)
             )
         }
 
     @Composable
     override fun Content() {
-        Text(text = "Profile Tab")
+        Text(text = "Home Tab")
     }
 }
